@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12251f">
+  <title>FWI Predictor | ForestWatch</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #18342b;
+      background: #f4f7f2;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .brand { color: #18342b; font-weight: 750; letter-spacing: -0.03em; text-decoration: none; }
+    .top-link { color: #25634b; font-weight: 650; text-decoration: none; }
+    main { max-width: 960px; margin: 16px auto 64px; padding: 0 24px; }
+    .heading { margin-bottom: 24px; }
+    .eyebrow { margin: 0 0 10px; color: #397b5d; font-size: 0.78rem; font-weight: 750; letter-spacing: 0.13em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.045em; }
+    .subtitle { margin: 12px 0 0; color: #61766d; line-height: 1.65; }
+    .card {
+      padding: clamp(22px, 5vw, 38px);
+      border: 1px solid #e1e9df;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 24px 70px #18342b10;
+    }
+    .result {
+      margin-bottom: 26px;
+      padding: 18px 20px;
+      border: 1px solid #b8dcc2;
+      border-radius: 14px;
+      background: #eff8f0;
+    }
+    .result-label { margin: 0; color: #397b5d; font-size: 0.78rem; font-weight: 750; letter-spacing: 0.1em; text-transform: uppercase; }
+    .result-value { margin: 6px 0 0; color: #194f36; font-size: 2rem; font-weight: 750; letter-spacing: -0.04em; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    label { color: #29483d; font-size: 0.9rem; font-weight: 650; }
+    input, select {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #d8e2d9;
+      border-radius: 10px;
+      background: #fff;
+      color: #18342b;
+      font: inherit;
+    }
+    input:focus, select:focus { border-color: #39805c; outline: 3px solid #39805c26; }
+    .help { margin: 0; color: #718279; font-size: 0.79rem; line-height: 1.5; }
+    .actions { display: flex; align-items: center; gap: 18px; margin-top: 28px; }
+    button {
+      min-height: 48px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 11px;
+      background: #236446;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 150ms ease, transform 150ms ease;
+    }
+    button:hover { background: #194f36; transform: translateY(-1px); }
+    .footnote { margin: 22px 0 0; color: #718279; font-size: 0.84rem; line-height: 1.6; }
+    @media (max-width: 760px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: 1fr; gap: 16px; }
+      .actions { align-items: stretch; flex-direction: column; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">ForestWatch</a>
+    <a class="top-link" href="/">Home</a>
+  </header>
+  <main>
+    <section class="heading">
+      <p class="eyebrow">Algerian forest fires · FWI estimator</p>
+      <h1>Weather observations</h1>
+      <p class="subtitle">Enter the measurements below to get a Fire Weather Index estimate. Example values are shown as hints.</p>
+    </section>
+    <section class="card" aria-label="FWI prediction form">
+      {% if results is defined %}
+      <div class="result" role="status" aria-live="polite">
+        <p class="result-label">Predicted Fire Weather Index</p>
+        <p class="result-value">{{ "%.2f"|format(results|float) }}</p>
+      </div>
+      {% endif %}
+      <form action="/predictdata" method="post">
+        <div class="grid">
+          <div class="field">
+            <label for="Temperature">Temperature (&deg;C)</label>
+            <input id="Temperature" name="Temperature" type="number" step="any" placeholder="e.g. 32" required>
+          </div>
+          <div class="field">
+            <label for="RH">Relative humidity (%)</label>
+            <input id="RH" name="RH" type="number" step="any" placeholder="e.g. 63" required>
+          </div>
+          <div class="field">
+            <label for="Ws">Wind speed (km/h)</label>
+            <input id="Ws" name="Ws" type="number" step="any" placeholder="e.g. 15" required>
+          </div>
+          <div class="field">
+            <label for="Rain">Rain (mm)</label>
+            <input id="Rain" name="Rain" type="number" step="any" placeholder="e.g. 0" required>
+          </div>
+          <div class="field">
+            <label for="FFMC">FFMC</label>
+            <input id="FFMC" name="FFMC" type="number" step="any" placeholder="e.g. 83.3" required>
+            <p class="help">Fine Fuel Moisture Code</p>
+          </div>
+          <div class="field">
+            <label for="DMC">DMC</label>
+            <input id="DMC" name="DMC" type="number" step="any" placeholder="e.g. 11.3" required>
+            <p class="help">Duff Moisture Code</p>
+          </div>
+          <div class="field">
+            <label for="ISI">ISI</label>
+            <input id="ISI" name="ISI" type="number" step="any" placeholder="e.g. 3.5" required>
+            <p class="help">Initial Spread Index</p>
+          </div>
+          <div class="field">
+            <label for="Classes">Fire class</label>
+            <select id="Classes" name="Classes" required>
+              <option value="" disabled selected>Choose a class</option>
+              <option value="0">Not fire</option>
+              <option value="1">Fire</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="Region">Region</label>
+            <select id="Region" name="Region" required>
+              <option value="" disabled selected>Choose a region</option>
+              <option value="0">Bejaia</option>
+              <option value="1">Sidi-Bel-Abbes</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="submit">Calculate FWI</button>
+          <a class="top-link" href="/">Return to home</a>
+        </div>
+        <p class="footnote">This model estimate is for informational use only and is not a substitute for official fire-weather or emergency guidance.</p>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

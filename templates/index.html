@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Fire FWI Prediction</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #d35400;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #d35400;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .btn:hover {
+            background-color: #a04000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Forest Fire FWI Prediction</h1>
+
+        <p>
+            Welcome to the Forest Fire Weather Index Prediction System.
+            This application uses Machine Learning to estimate the
+            Fire Weather Index based on weather conditions.
+        </p>
+
+        <p>
+            Enter the required environmental parameters to obtain
+            an FWI prediction from the trained Ridge Regression model.
+        </p>
+
+        <a href="{{ url_for('predict_datapoint') }}" class="btn">
+            Start Prediction
+        </a>
+    </div>
+
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12251f">
+  <title>Forest Fire Weather Index</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #18342b;
+      background: #f4f7f2;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .brand { color: #18342b; font-weight: 750; letter-spacing: -0.03em; text-decoration: none; }
+    .top-link { color: #25634b; font-weight: 650; text-decoration: none; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.9fr);
+      align-items: center;
+      gap: 48px;
+      max-width: 1120px;
+      margin: 36px auto 0;
+      padding: 48px 24px 80px;
+    }
+    .eyebrow { color: #397b5d; font-size: 0.78rem; font-weight: 750; letter-spacing: 0.13em; text-transform: uppercase; }
+    h1 { max-width: 680px; margin: 16px 0; font-size: clamp(2.5rem, 6vw, 4.7rem); line-height: 1.03; letter-spacing: -0.055em; }
+    .intro { max-width: 580px; color: #587067; font-size: 1.08rem; line-height: 1.75; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      margin-top: 18px;
+      padding: 0 22px;
+      border-radius: 12px;
+      background: #236446;
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 150ms ease, transform 150ms ease;
+    }
+    .button:hover { background: #194f36; transform: translateY(-1px); }
+    .panel {
+      padding: 30px;
+      border: 1px solid #e1e9df;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 24px 70px #18342b12;
+    }
+    .panel-mark {
+      display: grid;
+      width: 56px;
+      height: 56px;
+      place-items: center;
+      border-radius: 16px;
+      background: #e7f2e9;
+      color: #236446;
+      font-size: 1.5rem;
+    }
+    .panel h2 { margin: 22px 0 10px; font-size: 1.25rem; }
+    .panel p { margin: 0; color: #61766d; line-height: 1.7; }
+    .note { margin-top: 26px !important; padding-top: 20px; border-top: 1px solid #edf1eb; font-size: 0.88rem; }
+    @media (max-width: 720px) {
+      .hero { grid-template-columns: 1fr; gap: 32px; margin-top: 8px; padding-top: 32px; }
+      .panel { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">ForestWatch</a>
+    <a class="top-link" href="/predictdata">Open predictor &rarr;</a>
+  </header>
+  <main class="hero">
+    <section>
+      <p class="eyebrow">Algerian forest fires · FWI estimator</p>
+      <h1>Understand fire weather conditions.</h1>
+      <p class="intro">
+        Enter the observed weather and fire-danger measurements to estimate the
+        Fire Weather Index (FWI) with the trained prediction model.
+      </p>
+      <a class="button" href="/predictdata">Estimate the FWI <span aria-hidden="true">&nbsp;&rarr;</span></a>
+    </section>
+    <aside class="panel">
+      <div class="panel-mark" aria-hidden="true">&#9728;</div>
+      <h2>What you’ll need</h2>
+      <p>
+        Temperature, relative humidity, wind speed, rainfall, and the FFMC, DMC,
+        and ISI weather indices, plus the class and region values.
+      </p>
+      <p class="note">
+        This estimate is a machine-learning output for informational use and
+        should not replace official fire-weather guidance.
+      </p>
+    </aside>
+  </main>
+</body>
+</html>
